@@ -10,6 +10,7 @@ import {Subscription} from "rxjs";
 export class AppComponent {
   private _isMain = false;
   private _unDealed = true;
+  my_name = '';
   _players: FirebaseListObservable<any[]>;
   m_players: any[] = [];
   _turn: FirebaseObjectObservable<number>;
@@ -30,7 +31,7 @@ export class AppComponent {
         this._isMain = true;
       }
       if (q.length === 4) {
-        this.queue_sub.unsubscribe();
+        //this.queue_sub.unsubscribe();
       }
       if (q.length === 4 && this._isMain && this._unDealed) {
         this.deal();
@@ -40,6 +41,9 @@ export class AppComponent {
 
     this._players.subscribe((p: any[])=> {
       console.log(p);
+      if (p.length === 4) {
+        this._unDealed =false;
+      }
       this.m_players = p;
       this.ref.detectChanges();
     })
@@ -78,10 +82,12 @@ export class AppComponent {
   }
 
   ready() {
-    this._queue.push({"name": "Dom"});
+    this._queue.push({"name": this.my_name});
   }
 
   reset() {
     this.af.database.object('/game').remove();
+    this._unDealed =true;
+    this.m_queue = [];
   }
 }

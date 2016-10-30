@@ -35,5 +35,5 @@
   <div class="v_text">score: {{m_players[3]?.score}}</div>
 </div>
 
-<div *ngIf="_unDealed"><button (click)="ready()">ready!</button>{{m_queue.length}} people in queue</div>
+<div *ngIf="_unDealed"><input type="text" (input)="my_name=$event.target.value"><button (click)="ready()">ready!</button>{{m_queue.length}} people in queue</div>
 <button *ngIf="!_unDealed" (click)="reset()">reset game</button>
