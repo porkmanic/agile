@@ -36,3 +36,4 @@
 </div>
 
 <div *ngIf="_unDealed"><button (click)="ready()">ready!</button>{{m_queue.length}} people in queue</div>
+<button *ngIf="!_unDealed" (click)="reset()">reset game</button>

@@ -80,4 +80,8 @@ export class AppComponent {
   ready() {
     this._queue.push({"name": "Dom"});
   }
+
+  reset() {
+    this.af.database.object('/game').remove();
+  }
 }
