@@ -1,0 +1,72 @@
+.horizontal {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: 70vw;
+  text-align: center;
+}
+
+.horizontal img {
+  width: 4vw;
+}
+
+.vertical {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+  width: 7vh;
+  height: 70vh;
+}
+
+.vertical img {
+  margin-top: -5vh;
+  width: 7vh;
+}
+
+.west {
+  left: 10vw;
+}
+
+.south {
+  bottom: 5vh;
+}
+
+.east {
+  right: 10vw;
+}
+
+.north {
+  top: 5vh;
+}
+
+.north_text {
+  bottom: 1vh;
+  width: 50vw;
+}
+
+.south_text {
+  top: 1vh;
+  width: 50vw;
+}
+
+.h_text {
+  float: left;
+  width: 25%;
+}
+
+.west_text {
+  left: 1vw;
+  height: 20vw;
+}
+
+.east_text {
+  right: 1vw;
+  height: 20vw;
+}
+
+.v_text {
+  float: left;
+  height: 25%;
+}

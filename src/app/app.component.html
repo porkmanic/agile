@@ -1,0 +1,38 @@
+<div class="horizontal south">
+  <img *ngFor="let card of m_players[0]?.cards" src="assets/images/cards/{{card}}.gif">
+</div>
+<div class="vertical east">
+  <img *ngFor="let card of m_players[1]?.cards" src="assets/images/cards/{{card}}.gif">
+</div>
+<div class="horizontal north">
+  <img *ngFor="let card of m_players[2]?.cards" src="assets/images/cards/{{card}}.gif">
+</div>
+<div class="vertical west">
+  <img *ngFor="let card of m_players[3]?.cards" src="assets/images/cards/{{card}}.gif">
+</div>
+<div class="south_text horizontal">
+  <div class="h_text">name: {{m_players[0]?.name}}</div>
+  <div class="h_text">tricks: {{m_players[0]?.trick}}</div>
+  <div class="h_text">bids: {{m_players[0]?.bids}}</div>
+  <div class="h_text">score: {{m_players[0]?.score}}</div>
+</div>
+<div class="east_text vertical">
+  <div class="v_text">name: {{m_players[1]?.name}}</div>
+  <div class="v_text">tricks: {{m_players[1]?.trick}}</div>
+  <div class="v_text">bids: {{m_players[1]?.bids}}</div>
+  <div class="v_text">score: {{m_players[1]?.score}}</div>
+</div>
+<div class="north_text horizontal">
+  <div class="h_text">name: {{m_players[2]?.name}}</div>
+  <div class="h_text">tricks: {{m_players[2]?.trick}}</div>
+  <div class="h_text">bids: {{m_players[2]?.bids}}</div>
+  <div class="h_text">score: {{m_players[2]?.score}}</div>
+</div>
+<div class="west_text vertical">
+  <div class="v_text">name: {{m_players[3]?.name}}</div>
+  <div class="v_text">tricks: {{m_players[3]?.trick}}</div>
+  <div class="v_text">bids: {{m_players[3]?.bids}}</div>
+  <div class="v_text">score: {{m_players[3]?.score}}</div>
+</div>
+
+<div *ngIf="_unDealed"><button (click)="ready()">ready!</button>{{m_queue.length}} people in queue</div>
