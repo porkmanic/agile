@@ -70,3 +70,12 @@
   float: left;
   height: 25%;
 }
+
+.mycenter {
+  position: absolute;
+  width: 200px;
+  top: 40vh;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}

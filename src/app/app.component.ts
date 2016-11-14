@@ -1,6 +1,8 @@
-import {Component, ChangeDetectorRef} from "@angular/core";
+import {Component, ChangeDetectorRef, HostListener} from "@angular/core";
 import {AngularFire, FirebaseObjectObservable, FirebaseListObservable} from "angularfire2";
 import {Subscription} from "rxjs";
+import {Queue} from "./queue";
+import {Player} from "./player";
 
 @Component({
   selector: 'sp-root',
@@ -10,14 +12,26 @@ import {Subscription} from "rxjs";
 export class AppComponent {
   private _isMain = false;
   private _unDealed = true;
+  private _myKey: string;
+  private _unJoined = true;
+
+  private _south: number;
+  private _north: number;
+  private _west: number;
+  private _east: number;
+
+  selectPlayers: Queue[] = [];
   my_name = '';
-  _players: FirebaseListObservable<any[]>;
-  m_players: any[] = [];
+  _players: FirebaseListObservable<Player[]>;
+  m_players: Player[] = [];
   _turn: FirebaseObjectObservable<number>;
 
-  _queue: FirebaseListObservable<any[]>;
-  m_queue: any[] = [];
+  _queue: FirebaseListObservable<Queue[]>;
+  m_queue: Queue[] = [];
   queue_sub: Subscription;
+
+  errorMsg: string = '';
+  self: Player;
 
   constructor(private af: AngularFire, private ref: ChangeDetectorRef) {
     this._queue = af.database.list('/queue');
@@ -25,24 +39,23 @@ export class AppComponent {
     this._players = af.database.list('/game/players');
 
     this.queue_sub = this._queue.subscribe((q: any[])=> {
-      console.log(q);
       this.m_queue = q;
-      if (q.length === 0) {
-        this._isMain = true;
-      }
-      if (q.length === 4) {
-        //this.queue_sub.unsubscribe();
-      }
-      if (q.length === 4 && this._isMain && this._unDealed) {
-        this.deal();
-      }
       this.ref.detectChanges();
     });
 
-    this._players.subscribe((p: any[])=> {
-      console.log(p);
-      if (p.length === 4) {
-        this._unDealed =false;
+    this._players.subscribe((p: Player[])=> {
+      if (this._unDealed) {
+        let findMe = p.find(value => value.myKey === this._myKey);
+        if (findMe) {
+          console.log(findMe);
+          this._unDealed = false;
+          this.queue_sub.unsubscribe();
+          this.self = findMe;
+          this._south = findMe.position;
+          this._east = this._getPosition(findMe.position + 1);
+          this._north = this._getPosition(findMe.position + 2);
+          this._west = this._getPosition(findMe.position + 3);
+        }
       }
       this.m_players = p;
       this.ref.detectChanges();
@@ -57,20 +70,24 @@ export class AppComponent {
     }
     this.shuffle(deck);
     let players = [];
-    for (let q of this.m_queue) {
-      let playernew = {
-        "name": q.name,
-        "bids": 0,
-        "trick": 0,
-        "score": 0,
-        "cards": deck.splice(0, 13),
-        "played_card": 22
-      };
+    for (let i = 0; i < this.selectPlayers.length; i++) {
+      let q = this.selectPlayers[i];
+      let playernew = new Player(q.name,
+        deck.splice(0, 13).sort((a, b) => {
+          if (a > b) {
+            return -1;
+          }
+          if (a < b) {
+            return 1;
+          }
+          return 0;
+        }),
+        q.$key, i);
       players.push(playernew);
+      this._queue.remove(q.$key);
     }
     let game$ = this.af.database.object('/game');
     game$.set({players: players,turn: 0});
-    this._queue.remove();
     this._unDealed = false;
   }
 
@@ -81,13 +98,44 @@ export class AppComponent {
     }
   }
 
-  ready() {
-    this._queue.push({"name": this.my_name});
+  joinGame() {
+    this._myKey = this._queue.push({name: this.my_name}).key;
+    this._unJoined = false;
   }
 
-  reset() {
+  startGame(queues: Queue[]) {
+    const NUM_PLAYERS = 4;
+    this.selectPlayers = queues;
+    console.log(this.selectPlayers);
+    if (this.selectPlayers.length === NUM_PLAYERS) {
+      this._isMain = true;
+      if (this._isMain && this._unDealed) {
+        this.deal();
+      }
+    } else {
+      this.errorMsg = 'Please select 4 players!';
+    }
+  }
+
+  reStart() {
     this.af.database.object('/game').remove();
     this._unDealed =true;
     this.m_queue = [];
+    this._unJoined = true;
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  beforeUnloadHander(event) {
+    this._queue.remove(this._myKey);
+    if (!this._unDealed) {
+      this.reStart();
+    }
+  }
+
+  private _getPosition(i: number) {
+    if (i >= 4) {
+      return i - 4;
+    }
+    return i;
   }
 }

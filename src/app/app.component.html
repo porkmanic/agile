@@ -1,39 +1,52 @@
-<div class="horizontal south">
-  <img *ngFor="let card of m_players[0]?.cards" src="assets/images/cards/{{card}}.gif">
+<div *ngIf="!_unDealed">
+  <div class="horizontal south">
+    <img *ngFor="let card of m_players[_south]?.cards" src="assets/images/cards/{{card}}.gif">
+  </div>
+  <div class="vertical east">
+    <img *ngFor="let card of m_players[_east]?.cards" src="assets/images/cards/{{card}}.gif">
+  </div>
+  <div class="horizontal north">
+    <img *ngFor="let card of m_players[_north]?.cards" src="assets/images/cards/{{card}}.gif">
+  </div>
+  <div class="vertical west">
+    <img *ngFor="let card of m_players[_west]?.cards" src="assets/images/cards/{{card}}.gif">
+  </div>
+  <div class="south_text horizontal">
+    <div class="h_text">name: {{m_players[_south]?.name}}</div>
+    <div class="h_text">tricks: {{m_players[_south]?.trick}}</div>
+    <div class="h_text">bids: {{m_players[_south]?.bids}}</div>
+    <div class="h_text">score: {{m_players[_south]?.score}}</div>
+  </div>
+  <div class="east_text vertical">
+    <div class="v_text">name: {{m_players[_east]?.name}}</div>
+    <div class="v_text">tricks: {{m_players[_east]?.trick}}</div>
+    <div class="v_text">bids: {{m_players[_east]?.bids}}</div>
+    <div class="v_text">score: {{m_players[_east]?.score}}</div>
+  </div>
+  <div class="north_text horizontal">
+    <div class="h_text">name: {{m_players[_north]?.name}}</div>
+    <div class="h_text">tricks: {{m_players[_north]?.trick}}</div>
+    <div class="h_text">bids: {{m_players[_north]?.bids}}</div>
+    <div class="h_text">score: {{m_players[_north]?.score}}</div>
+  </div>
+  <div class="west_text vertical">
+    <div class="v_text">name: {{m_players[_west]?.name}}</div>
+    <div class="v_text">tricks: {{m_players[_west]?.trick}}</div>
+    <div class="v_text">bids: {{m_players[_west]?.bids}}</div>
+    <div class="v_text">score: {{m_players[_west]?.score}}</div>
+  </div>
 </div>
-<div class="vertical east">
-  <img *ngFor="let card of m_players[1]?.cards" src="assets/images/cards/{{card}}.gif">
+<div class="mycenter" *ngIf="_unDealed">
+  <div *ngIf="_unJoined">
+    <input class="form-control" type="text" (input)="my_name=$event.target.value">
+    <button class="btn btn-primary" (click)="joinGame()">Join game!</button>
+  </div>
+  <div *ngIf="!_unJoined">
+    <select multiple class="form-control" #queueSelector>
+      <option *ngFor="let queue of m_queue" [value]="queue">{{queue.name}}</option>
+    </select>
+    <button class="btn btn-primary" (click)="startGame(queueSelector.value)">Start game!</button>
+    <div>{{errorMsg}}</div>
+  </div>
 </div>
-<div class="horizontal north">
-  <img *ngFor="let card of m_players[2]?.cards" src="assets/images/cards/{{card}}.gif">
-</div>
-<div class="vertical west">
-  <img *ngFor="let card of m_players[3]?.cards" src="assets/images/cards/{{card}}.gif">
-</div>
-<div class="south_text horizontal">
-  <div class="h_text">name: {{m_players[0]?.name}}</div>
-  <div class="h_text">tricks: {{m_players[0]?.trick}}</div>
-  <div class="h_text">bids: {{m_players[0]?.bids}}</div>
-  <div class="h_text">score: {{m_players[0]?.score}}</div>
-</div>
-<div class="east_text vertical">
-  <div class="v_text">name: {{m_players[1]?.name}}</div>
-  <div class="v_text">tricks: {{m_players[1]?.trick}}</div>
-  <div class="v_text">bids: {{m_players[1]?.bids}}</div>
-  <div class="v_text">score: {{m_players[1]?.score}}</div>
-</div>
-<div class="north_text horizontal">
-  <div class="h_text">name: {{m_players[2]?.name}}</div>
-  <div class="h_text">tricks: {{m_players[2]?.trick}}</div>
-  <div class="h_text">bids: {{m_players[2]?.bids}}</div>
-  <div class="h_text">score: {{m_players[2]?.score}}</div>
-</div>
-<div class="west_text vertical">
-  <div class="v_text">name: {{m_players[3]?.name}}</div>
-  <div class="v_text">tricks: {{m_players[3]?.trick}}</div>
-  <div class="v_text">bids: {{m_players[3]?.bids}}</div>
-  <div class="v_text">score: {{m_players[3]?.score}}</div>
-</div>
-
-<div *ngIf="_unDealed"><input type="text" (input)="my_name=$event.target.value"><button (click)="ready()">ready!</button>{{m_queue.length}} people in queue</div>
-<button *ngIf="!_unDealed" (click)="reset()">reset game</button>
+<button class="btn btn-primary" *ngIf="!_unDealed" (click)="reStart()">restart game</button>
