@@ -49,15 +49,18 @@ export class AppComponent {
         if (findMe) {
           console.log(findMe);
           this._unDealed = false;
-          this.queue_sub.unsubscribe();
           this.self = findMe;
           this._south = findMe.position;
           this._east = this._getPosition(findMe.position + 1);
           this._north = this._getPosition(findMe.position + 2);
           this._west = this._getPosition(findMe.position + 3);
+          this.queue_sub.unsubscribe();
         }
+      } else if (p.length === 0) {
+        this.reStart();
       }
       this.m_players = p;
+
       this.ref.detectChanges();
     })
   }
@@ -88,7 +91,6 @@ export class AppComponent {
     }
     let game$ = this.af.database.object('/game');
     game$.set({players: players,turn: 0});
-    this._unDealed = false;
   }
 
   shuffle(a) {
@@ -103,9 +105,8 @@ export class AppComponent {
     this._unJoined = false;
   }
 
-  startGame(queues: Queue[]) {
+  startGame() {
     const NUM_PLAYERS = 4;
-    this.selectPlayers = queues;
     console.log(this.selectPlayers);
     if (this.selectPlayers.length === NUM_PLAYERS) {
       this._isMain = true;
@@ -122,6 +123,10 @@ export class AppComponent {
     this._unDealed =true;
     this.m_queue = [];
     this._unJoined = true;
+    this.queue_sub = this._queue.subscribe((q: any[])=> {
+      this.m_queue = q;
+      this.ref.detectChanges();
+    });
   }
 
   @HostListener('window:beforeunload', ['$event'])

@@ -42,10 +42,10 @@
     <button class="btn btn-primary" (click)="joinGame()">Join game!</button>
   </div>
   <div *ngIf="!_unJoined">
-    <select multiple class="form-control" #queueSelector>
+    <select multiple class="form-control" [(ngModel)]="selectPlayers">
       <option *ngFor="let queue of m_queue" [value]="queue">{{queue.name}}</option>
     </select>
-    <button class="btn btn-primary" (click)="startGame(queueSelector.value)">Start game!</button>
+    <button class="btn btn-primary" (click)="startGame()">Start game!</button>
     <div>{{errorMsg}}</div>
   </div>
 </div>
